@@ -33,10 +33,16 @@ function normalizeProduct(doc) {
 
 export function listenProducts(callback) {
   const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
-  return onSnapshot(q, (snapshot) => {
-    const products = snapshot.docs.map(normalizeProduct)
-    callback(products)
-  })
+  return onSnapshot(q,
+    (snapshot) => {
+      const products = snapshot.docs.map(normalizeProduct)
+      callback(products)
+    },
+    (error) => {
+      console.warn('Firestore error, usando fallback local:', error.message)
+      callback([])
+    }
+  )
 }
 
 export async function getProductBySlug(slug) {
