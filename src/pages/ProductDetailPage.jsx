@@ -17,10 +17,12 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     setLoading(true)
+    setCurrentImageIndex(0)
+    setAdded(false)
     getProductBySlug(slug).then((p) => {
       setProduct(p)
       setLoading(false)
-    })
+    }).catch(() => setLoading(false))
   }, [slug])
 
   if (loading) {
