@@ -30,19 +30,20 @@ const ProductCard = ({ product, index }) => {
         className="group block"
         aria-label={`Ver ${product.name}`}
       >
-        <div className="relative aspect-square overflow-hidden bg-zinc-900" style={{ aspectRatio: '1/1' }}>
+        <div className="relative aspect-square overflow-hidden bg-zinc-900">
           <img
-            src={imgError ? product.images[0] : product.images[0]}
+            src={product.images[0] || '/images/placeholder.jpg'}
             alt={product.name}
             className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
             loading="lazy"
+            onError={(e) => { e.target.src = product.images[1] || product.images[0]; setImgError(true) }}
           />
           <img
             src={product.images[1] || product.images[0]}
             alt={`${product.name} - vista alternativa`}
             className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
             loading="lazy"
-            onError={() => setImgError(true)}
+            onError={(e) => { e.target.style.display = 'none' }}
           />
 
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
