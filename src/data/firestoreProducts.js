@@ -1,17 +1,5 @@
-import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, query, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore'
-
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDb01FXB_GE8nbRkahbdVnV6QrpU6HYePI",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "rybon-hats-ffc24.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "rybon-hats-ffc24",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "rybon-hats-ffc24.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "676180612675",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:676180612675:web:6ea89a397bb3d15a2126f6"
-}
-
-const app = initializeApp(firebaseConfig, 'rybon-web')
-const db = getFirestore(app)
+import { collection, onSnapshot, doc, getDoc } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 
 function normalizeProduct(doc) {
   const data = doc.data()
@@ -32,14 +20,14 @@ function normalizeProduct(doc) {
 }
 
 export function listenProducts(callback) {
-  const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
-  return onSnapshot(q,
+  const ref = collection(db, 'products')
+  return onSnapshot(ref,
     (snapshot) => {
       const products = snapshot.docs.map(normalizeProduct)
       callback(products)
     },
     (error) => {
-      console.warn('Firestore error, usando fallback local:', error.message)
+      console.warn('Firestore error:', error.message)
       callback([])
     }
   )
