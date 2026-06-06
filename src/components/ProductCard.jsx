@@ -5,8 +5,8 @@ import { ShoppingBag, Check, Eye } from 'lucide-react';
 import { useCart } from './CartContext';
 
 const ProductCard = ({ product, index }) => {
-  const [imgError, setImgError] = useState(false);
   const [added, setAdded] = useState(false);
+  const [secondImgError, setSecondImgError] = useState(false);
   const { addItem } = useCart();
 
   const handleAdd = (e) => {
@@ -17,6 +17,8 @@ const ProductCard = ({ product, index }) => {
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
+
+  const hasSecondImage = product.images?.length > 1 && !secondImgError;
 
   return (
     <motion.div
@@ -36,15 +38,18 @@ const ProductCard = ({ product, index }) => {
             alt={product.name}
             className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
             loading="lazy"
-            onError={(e) => { e.target.src = product.images[1] || product.images[0]; setImgError(true) }}
+            onError={(e) => { e.target.src = product.images[1] || product.images[0] }}
           />
-          <img
-            src={product.images[1] || product.images[0]}
-            alt={`${product.name} - vista alternativa`}
-            className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-            loading="lazy"
-            onError={(e) => { e.target.style.display = 'none' }}
-          />
+
+          {hasSecondImage && (
+            <img
+              src={product.images[1]}
+              alt={`${product.name} - vista alternativa`}
+              className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              loading="lazy"
+              onError={() => setSecondImgError(true)}
+            />
+          )}
 
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
             <span className={`px-2.5 py-1 text-[10px] font-body tracking-wider uppercase ${
@@ -99,7 +104,7 @@ const ProductCard = ({ product, index }) => {
           </p>
           <p className="font-display text-lg text-white">
             ${product.price.toLocaleString()}
-            <span className=" font-body text-[10px] text-zinc-600 ml-1">{product.currency}</span>
+            <span className="font-body text-[10px] text-zinc-600 ml-1">{product.currency}</span>
           </p>
         </div>
       </Link>

@@ -38,7 +38,7 @@ const PayPalButton = ({ totalUSD, onSuccess, onError }) => {
         actions.order.create({
           purchase_units: [{
             amount: { value: String(totalUSD), currency_code: 'USD' },
-            description: 'Rybon Hats — Orden',
+            description: 'Rybon — Orden',
           }],
         }),
       onApprove: (data, actions) =>

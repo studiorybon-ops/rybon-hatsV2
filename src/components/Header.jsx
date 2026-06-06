@@ -30,8 +30,8 @@ const Header = () => {
           <Link to="/" className="relative z-10" aria-label="Ir al inicio">
             <motion.img
               src={brandInfo.logoUrl}
-              alt="Rybon Hats"
-              className="h-7 md:h-9 invert brightness-0"
+              alt="Rybon"
+              className="h-8 md:h-10"
               whileHover={{ scale: 1.04 }}
               transition={{ duration: 0.2 }}
             />
@@ -44,9 +44,9 @@ const Header = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`relative text-sm tracking-widest uppercase font-body font-medium transition-colors duration-200 ${
-                    isActive ? 'text-accent' : 'text-zinc-400 hover:text-white'
-                  }`}
+                   className={`relative text-sm tracking-widest uppercase font-body font-medium transition-colors duration-200 ${
+                     isActive ? 'text-accent' : 'text-zinc-400 hover:text-white'
+                   }`}
                 >
                   {item.name}
                   {isActive && (

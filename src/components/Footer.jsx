@@ -26,8 +26,8 @@ const Footer = () => {
           >
             <img
               src={brandInfo.logoUrl}
-              alt="Rybon Hats"
-              className="h-8 invert brightness-0"
+              alt="Rybon"
+              className="h-9"
             />
             <p className="text-zinc-500 font-body text-sm leading-relaxed max-w-xs">
               {brandInfo.concept}
@@ -114,8 +114,8 @@ const Footer = () => {
           <p className="text-zinc-700 font-body text-xs">
             &copy; {new Date().getFullYear()} {brandInfo.name}. Todos los derechos reservados.
           </p>
-          <p className="text-zinc-800 font-body text-[10px] tracking-wider uppercase">
-            Ediciones Limitadas
+          <p className="text-zinc-800 font-body text-[10px] tracking-[0.3em] uppercase">
+            Rewrite Yourself
           </p>
         </motion.div>
       </div>

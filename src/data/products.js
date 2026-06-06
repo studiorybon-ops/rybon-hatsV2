@@ -1,14 +1,14 @@
 import { getProductBySlug as getFSProduct } from './firestoreProducts'
 
 export const brandInfo = {
-  name: 'Rybon Hats',
+  name: 'Rybon',
   country: 'República Dominicana',
   email: 'studiorybon@gmail.com',
-  instagram: 'rybon.hats',
-  tiktok: 'rybon.hats',
+  instagram: 'rybon.ry',
+  tiktok: 'rybon.ry',
   hours: '24/7',
-  concept: 'Gorras con un estilo diferente para quienes buscan destacar. Inspirada en la exclusividad y la autenticidad, cada diseño se crea en ediciones limitadas.',
-  logoUrl: 'https://customer-assets.emergentagent.com/job_df23813b-3c3a-4e90-a12c-ea5ad85b93b9/artifacts/u0ichcdd_logo%20png.png',
+  concept: 'Autenticidad que no se negocia. Cada diseño es una declaración. Ediciones limitadas para los que entienden.',
+  logoUrl: '/logo-rybon.png',
 }
 
 export const fallbackProducts = [
@@ -20,7 +20,7 @@ export const fallbackProducts = [
     currency: 'DOP',
     quantity: 8,
     available: true,
-    description: 'Gorra negra con detalles en azul. Edición limitada diseñada para quienes buscan destacar con autenticidad y estilo único.',
+    description: 'Negro profundo con detalles en azul. Edición limitada. Para los que entienden.',
     images: ['/images/sky/sky-1.jpg', '/images/sky/sky-2.jpg', '/images/sky/sky-3.jpg', '/images/sky/sky-4.jpg'],
     color: 'Negro / Azul',
   },
@@ -32,7 +32,7 @@ export const fallbackProducts = [
     currency: 'DOP',
     quantity: 8,
     available: true,
-    description: 'Gorra negra con detalles en rojo. Una pieza con identidad propia, creada en edición limitada para los que valoran la exclusividad.',
+    description: 'Negro profundo con detalles en rojo. Identidad que no se negocia. Edición limitada.',
     images: ['/images/loyal/loyal-1.jpg', '/images/loyal/loyal-2.jpg', '/images/loyal/loyal-3.jpg', '/images/loyal/loyal-4.jpg'],
     color: 'Negro / Rojo',
   },

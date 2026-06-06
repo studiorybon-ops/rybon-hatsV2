@@ -221,8 +221,8 @@ const ProductDetailPage = () => {
 
                 <div className="flex items-center gap-6 pt-6 border-t border-zinc-800/50">
                   {[
-                    { label: 'Instagram', href: `https://instagram.com/rybon.hats` },
-                    { label: 'TikTok', href: `https://tiktok.com/rybon.hats` },
+                    { label: 'Instagram', href: `https://instagram.com/rybon.ry` },
+                    { label: 'TikTok', href: `https://tiktok.com/@rybon.ry` },
                   ].map((s) => (
                     <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-accent transition-colors font-body text-xs tracking-wider uppercase">
                       {s.label}

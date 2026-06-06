@@ -48,7 +48,7 @@ const CatalogPage = () => {
               Catálogo
             </h1>
             <p className="mt-3 text-zinc-600 font-body text-sm max-w-xl">
-              {loading ? 'Cargando...' : `${products.length} modelos · Ediciones limitadas · Envíos próximamente`}
+              {loading ? 'Cargando...' : `${products.length} modelos · Ediciones limitadas`}
             </p>
           </motion.div>
 

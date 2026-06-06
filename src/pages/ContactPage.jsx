@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Instagram, Mail, Clock, MapPin } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Meteors from '../components/Meteors';
 import { brandInfo } from '../data/products';
 
 const stagger = {
@@ -19,8 +20,9 @@ const fadeUp = {
 
 const ContactPage = () => {
   return (
-    <div className="min-h-[100dvh] bg-surface">
+    <div className="min-h-[100dvh] bg-surface relative overflow-hidden">
       <div className="bg-glow fixed inset-0 pointer-events-none" />
+      <Meteors number={20} />
       <Header />
 
       <main className="relative pt-28 pb-24 px-6 md:px-12">
