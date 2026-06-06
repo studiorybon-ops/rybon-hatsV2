@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, Trash2, Tag, CheckCircle, XCircle, ShoppingBag, ArrowRight, ArrowLeft, AlertCircle, CreditCard } from 'lucide-react';
 import { useCart } from './CartContext';
+import { db } from '../lib/firebase';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_lkj1s9j';
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_y8xtkrs';
@@ -194,6 +196,27 @@ const CartDrawer = () => {
       const { decrementStock } = await import('../data/useStock');
       await Promise.all(items.map(({ product, quantity }) => decrementStock(product.slug, quantity)));
     } catch (err) { console.error('Stock error:', err); }
+
+    try {
+      await addDoc(collection(db, 'orders'), {
+        items: items.map(({ product, quantity }) => ({
+          productSlug: product.slug,
+          productName: product.name,
+          productPrice: product.price,
+          quantity,
+          productImage: product.images?.[0] || '',
+        })),
+        shippingData,
+        subtotalDOP,
+        discountDOP: discountDOP > 0 ? discountDOP : null,
+        totalDOP,
+        totalUSD,
+        promoCode: promoCode?.code || null,
+        status: 'pending',
+        paypalOrderId: details.id,
+        createdAt: serverTimestamp(),
+      });
+    } catch (err) { console.error('Error guardando pedido:', err); }
 
     try {
       const emailjs = await import('@emailjs/browser');

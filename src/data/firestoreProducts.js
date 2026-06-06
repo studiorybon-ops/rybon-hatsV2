@@ -1,4 +1,4 @@
-import { collection, onSnapshot, doc, getDoc } from 'firebase/firestore'
+import { collection, query, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
 function normalizeProduct(doc) {
@@ -20,16 +20,37 @@ function normalizeProduct(doc) {
 }
 
 export function listenProducts(callback) {
+  let fallbackUnsub = null
   const ref = collection(db, 'products')
-  return onSnapshot(ref,
+  const q = query(ref, orderBy('createdAt', 'desc'))
+  const mainUnsub = onSnapshot(q,
     (snapshot) => {
-      const products = snapshot.docs.map(normalizeProduct)
-      callback(products)
+      callback(snapshot.docs.map(normalizeProduct))
     },
     (error) => {
-      console.warn('Firestore error:', error.message)
-      callback([])
+      console.warn('Firestore orderBy error, retrying without:', error.message)
+      fallbackUnsub = onSnapshot(ref,
+        (snapshot) => {
+          callback(snapshot.docs.map(normalizeProduct))
+        },
+        () => callback([])
+      )
     }
+  )
+  return () => {
+    mainUnsub()
+    if (fallbackUnsub) fallbackUnsub()
+  }
+}
+
+export function listenProduct(slug, callback) {
+  const ref = doc(db, 'products', slug)
+  return onSnapshot(ref,
+    (snap) => {
+      if (snap.exists()) callback(normalizeProduct(snap))
+      else callback(null)
+    },
+    () => callback(null)
   )
 }
 

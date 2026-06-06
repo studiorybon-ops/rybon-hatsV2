@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingBag, Check } from 'lucide-react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { getProductBySlug } from '../data/products'
+import { listenProduct } from '../data/firestoreProducts'
 import { useCart } from '../components/CartContext'
 
 const ProductDetailPage = () => {
@@ -19,10 +19,11 @@ const ProductDetailPage = () => {
     setLoading(true)
     setCurrentImageIndex(0)
     setAdded(false)
-    getProductBySlug(slug).then((p) => {
+    const unsub = listenProduct(slug, (p) => {
       setProduct(p)
       setLoading(false)
-    }).catch(() => setLoading(false))
+    })
+    return unsub
   }, [slug])
 
   if (loading) {

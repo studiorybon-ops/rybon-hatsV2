@@ -8,9 +8,8 @@ import { listenProducts } from '../data/firestoreProducts'
 import { fallbackProducts } from '../data/products'
 
 const CatalogPage = () => {
-  const [products, setProducts] = useState(fallbackProducts)
+  const [products, setProducts] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [usingFirestore, setUsingFirestore] = useState(false)
 
   useEffect(() => {
     const unsub = listenProducts((data) => {
@@ -24,7 +23,8 @@ const CatalogPage = () => {
           return p
         })
         setProducts(merged)
-        setUsingFirestore(true)
+      } else {
+        setProducts([])
       }
       setLoading(false)
     })
@@ -48,7 +48,7 @@ const CatalogPage = () => {
               Catálogo
             </h1>
             <p className="mt-3 text-zinc-600 font-body text-sm max-w-xl">
-              {loading ? 'Cargando...' : `${products.length} modelos · Ediciones limitadas`}
+              {loading ? 'Cargando...' : `${(products || []).length} modelos · Ediciones limitadas`}
             </p>
           </motion.div>
 
@@ -56,15 +56,13 @@ const CatalogPage = () => {
             <div className="py-32 flex items-center justify-center">
               <div className="w-6 h-6 border border-zinc-600 border-t-transparent rounded-full animate-spin" />
             </div>
-          ) : (
+          ) : products && products.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
               {products.map((product, index) => (
                 <ProductCard key={product.id} product={product} index={index} />
               ))}
             </div>
-          )}
-
-          {!loading && products.length === 0 && (
+          ) : (
             <div className="py-32 text-center">
               <p className="text-zinc-700 font-body text-sm tracking-wider uppercase">Próximamente</p>
             </div>
