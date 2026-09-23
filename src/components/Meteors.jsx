@@ -2,11 +2,13 @@ import { useMemo } from 'react';
 
 export default function Meteors({ number = 20 }) {
   const meteors = useMemo(() => {
+    const width = typeof window !== 'undefined' ? window.innerWidth : 1200;
     return Array.from({ length: number }, (_, i) => ({
       id: i,
-      left: Math.floor(Math.random() * 1200 - 100),
+      left: Math.random() * width - width * 0.1,
       delay: Math.random() * 0.8 + 0.2,
       duration: Math.floor(Math.random() * 10 + 3),
+      dist: -(Math.random() * width * 0.6 + 200),
     }));
   }, [number]);
 
@@ -20,6 +22,7 @@ export default function Meteors({ number = 20 }) {
             left: m.left + 'px',
             animationDelay: m.delay + 's',
             animationDuration: m.duration + 's',
+            '--meteor-dist': m.dist + 'px',
           }}
         />
       ))}
