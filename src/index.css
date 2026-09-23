@@ -122,3 +122,10 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-meteor-effect {
+    animation-duration: var(--meteor-dur, 5s) !important;
+    animation-iteration-count: infinite !important;
+  }
+}

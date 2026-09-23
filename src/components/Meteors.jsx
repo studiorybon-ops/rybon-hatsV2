@@ -23,6 +23,7 @@ export default function Meteors({ number = 20 }) {
             animationDelay: m.delay + 's',
             animationDuration: m.duration + 's',
             '--meteor-dist': m.dist + 'px',
+            '--meteor-dur': m.duration + 's',
           }}
         />
       ))}
