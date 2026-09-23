@@ -4,6 +4,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import ProductCard from '../components/ProductCard'
 import CursorGlow from '../components/CursorGlow'
+import AnnouncementBar from '../components/AnnouncementBar'
 import { listenProducts } from '../data/firestoreProducts'
 import { fallbackProducts } from '../data/products'
 
@@ -38,6 +39,8 @@ const CatalogPage = () => {
 
       <main className="relative pt-28 pb-24 px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
+          <AnnouncementBar />
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

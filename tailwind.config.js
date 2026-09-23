@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['"Bebas Neue"', 'sans-serif'],
+        display: ['"Bootzy TM"', 'sans-serif'],
         body: ['"Plus Jakarta Sans"', 'sans-serif'],
       },
       fontWeight: {

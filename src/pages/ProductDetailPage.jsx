@@ -1,24 +1,21 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingBag, Check } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, MessageCircle, Clock } from 'lucide-react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { listenProduct } from '../data/firestoreProducts'
-import { useCart } from '../components/CartContext'
+import { ORDER_ENABLED, orderUrl } from '../lib/order'
 
 const ProductDetailPage = () => {
   const { slug } = useParams()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [added, setAdded] = useState(false)
-  const { addItem } = useCart()
 
   useEffect(() => {
     setLoading(true)
     setCurrentImageIndex(0)
-    setAdded(false)
     const unsub = listenProduct(slug, (p) => {
       setProduct(p)
       setLoading(false)
@@ -52,10 +49,10 @@ const ProductDetailPage = () => {
   const nextImage = () => setCurrentImageIndex((prev) => prev === product.images.length - 1 ? 0 : prev + 1)
   const prevImage = () => setCurrentImageIndex((prev) => prev === 0 ? product.images.length - 1 : prev - 1)
 
-  const handleAddToCart = () => {
-    addItem(product)
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2000)
+  const handleOrder = () => {
+    const url = orderUrl(product)
+    if (!url) return
+    window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   return (
@@ -93,6 +90,7 @@ const ProductDetailPage = () => {
                       src={currentImage}
                       alt={`${product.name} - Imagen ${currentImageIndex + 1}`}
                       className="w-full h-full object-cover"
+                      decoding="async"
                       initial={{ opacity: 0, scale: 1.02 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0 }}
@@ -136,7 +134,7 @@ const ProductDetailPage = () => {
                       }`}
                       aria-label={`Seleccionar imagen ${index + 1}`}
                     >
-                      <img src={image} alt={`${product.name} - Miniatura ${index + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                      <img src={image} alt={`${product.name} - Miniatura ${index + 1}`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     </button>
                   ))}
                 </div>
@@ -152,7 +150,7 @@ const ProductDetailPage = () => {
               <div className="space-y-8">
                 <div className="flex items-center gap-3">
                   <span className={product.available ? 'badge-available' : 'badge-soldout'}>
-                    {product.available ? 'Disponible' : 'Agotado'}
+                    {product.available ? 'Disponible' : 'Agotada'}
                   </span>
                   <span className="px-3 py-1 text-[10px] font-body tracking-wider bg-zinc-900 text-zinc-600 border border-zinc-800/50">
                     Edición Limitada
@@ -172,6 +170,12 @@ const ProductDetailPage = () => {
                   {product.description}
                 </p>
 
+                {product.manufactured > 0 && (
+                  <p className="font-display text-lg tracking-[0.15em] text-zinc-300 uppercase">
+                    Edición limitada &middot; {product.manufactured} unidades fabricadas
+                  </p>
+                )}
+
                 {product.hasAccesories && product.accesoriesInfo && (
                   <div className="p-4 bg-zinc-900/50 border border-zinc-800/50">
                     <p className="text-zinc-600 font-body text-[10px] uppercase tracking-[0.15em] mb-1">Accesorios incluidos</p>
@@ -184,39 +188,32 @@ const ProductDetailPage = () => {
                     <span className="text-zinc-600 font-body text-xs tracking-wider uppercase">Color</span>
                     <span className="text-white font-body text-sm">{product.color}</span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-t border-zinc-800/30">
-                    <span className="text-zinc-600 font-body text-xs tracking-wider uppercase">Disponibles</span>
-                    <span className="text-white font-body text-sm">{product.quantity} unidades</span>
-                  </div>
                 </div>
 
                 <div className="pt-4">
-                  <motion.button
-                    onClick={handleAddToCart}
-                    disabled={!product.available}
-                    className={`w-full py-4 font-display text-xl tracking-wider uppercase flex items-center justify-center gap-3 transition-all duration-200 ${
-                      product.available
-                        ? added
-                          ? 'bg-green-600 text-white'
-                          : 'btn-primary text-lg'
-                        : 'bg-zinc-900 text-zinc-600 cursor-not-allowed border border-zinc-800'
-                    }`}
-                    whileTap={product.available ? { scale: 0.98 } : {}}
-                  >
-                    <AnimatePresence mode="wait">
-                      {added ? (
-                        <motion.span key="added" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="flex items-center gap-2">
-                          <Check size={18} /> ¡Agregado!
-                        </motion.span>
-                      ) : (
-                        <motion.span key="add" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="flex items-center gap-2">
-                          <ShoppingBag size={18} /> {product.available ? 'Agregar al carrito' : 'Agotado'}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
+                  {!product.available ? (
+                    <div className="w-full py-4 font-display text-xl tracking-wider uppercase flex items-center justify-center gap-3 bg-zinc-900 text-zinc-600 cursor-not-allowed border border-zinc-800">
+                      <Clock size={18} /> Agotada
+                    </div>
+                  ) : ORDER_ENABLED ? (
+                    <motion.button
+                      onClick={handleOrder}
+                      className="w-full py-4 font-display text-xl tracking-wider uppercase flex items-center justify-center gap-3 btn-primary text-lg"
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <MessageCircle size={18} /> Pedir por WhatsApp
+                    </motion.button>
+                  ) : (
+                    <div className="w-full py-4 font-display text-xl tracking-wider uppercase flex items-center justify-center gap-3 bg-zinc-900 text-zinc-500 cursor-not-allowed border border-zinc-800">
+                      <Clock size={18} /> Coming Soon
+                    </div>
+                  )}
                   <p className="text-zinc-700 font-body text-[10px] text-center mt-3 tracking-wider uppercase">
-                    Pago seguro con PayPal
+                    {!product.available
+                      ? 'Edición agotada — vuelve pronto'
+                      : ORDER_ENABLED
+                        ? 'Se te responderá por WhatsApp'
+                        : 'Proximamente disponible'}
                   </p>
                 </div>
 

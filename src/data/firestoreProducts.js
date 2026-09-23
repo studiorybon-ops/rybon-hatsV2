@@ -10,6 +10,7 @@ function normalizeProduct(doc) {
     price: Number(data.price) || 0,
     currency: 'DOP',
     quantity: Number(data.stock) || 0,
+    manufactured: Number(data.manufactured) || Number(data.stock) || 0,
     available: data.active !== false && Number(data.stock) > 0,
     description: data.description || '',
     images: (data.images || []).map(img => img.data || img).filter(Boolean),

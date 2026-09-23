@@ -1,21 +1,18 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Check, Eye } from 'lucide-react';
-import { useCart } from './CartContext';
+import { MessageCircle, Clock, Eye } from 'lucide-react';
+import { ORDER_ENABLED, orderUrl } from '../lib/order';
 
 const ProductCard = ({ product, index }) => {
-  const [added, setAdded] = useState(false);
   const [secondImgError, setSecondImgError] = useState(false);
-  const { addItem } = useCart();
 
-  const handleAdd = (e) => {
+  const handleOrder = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!product.available) return;
-    addItem(product);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
+    const url = orderUrl(product);
+    if (!url) return;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const hasSecondImage = product.images?.length > 1 && !secondImgError;
@@ -38,6 +35,7 @@ const ProductCard = ({ product, index }) => {
             alt={product.name}
             className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
             loading="lazy"
+            decoding="async"
             onError={(e) => { e.target.src = product.images[1] || product.images[0] }}
           />
 
@@ -47,6 +45,7 @@ const ProductCard = ({ product, index }) => {
               alt={`${product.name} - vista alternativa`}
               className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
               loading="lazy"
+              decoding="async"
               onError={() => setSecondImgError(true)}
             />
           )}
@@ -57,35 +56,34 @@ const ProductCard = ({ product, index }) => {
                 ? 'bg-white text-black'
                 : 'bg-zinc-800 text-zinc-500'
             }`}>
-              {product.available ? 'Disponible' : 'Agotado'}
-            </span>
-            <span className="px-2.5 py-1 text-[10px] font-body tracking-wider uppercase bg-black/60 text-zinc-400 border border-zinc-700/50 backdrop-blur-sm">
-              {product.quantity} uds
+              {product.available ? 'Disponible' : 'Agotada'}
             </span>
           </div>
 
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
 
           <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-            <div
-              onClick={handleAdd}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && handleAdd(e)}
-              className={`w-full py-2.5 flex items-center justify-center gap-2 text-xs font-body tracking-wider uppercase transition-all duration-200 cursor-pointer ${
-                added
-                  ? 'bg-green-600 text-white'
-                  : product.available
-                    ? 'bg-white text-black hover:bg-zinc-200'
-                    : 'bg-zinc-800 text-zinc-600 cursor-not-allowed'
-              }`}
-            >
-              {added ? (
-                <span className="flex items-center gap-1.5"><Check size={13} /> Agregado</span>
+            {product.available ? (
+              ORDER_ENABLED ? (
+                <div
+                  onClick={handleOrder}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && handleOrder(e)}
+                  className="w-full py-2.5 flex items-center justify-center gap-2 text-xs font-display tracking-[0.2em] uppercase transition-all duration-200 cursor-pointer bg-white text-black hover:bg-zinc-200"
+                >
+                  <MessageCircle size={13} /> Pedir
+                </div>
               ) : (
-                <span className="flex items-center gap-1.5"><ShoppingBag size={13} /> {product.available ? 'Agregar' : 'Agotado'}</span>
-              )}
-            </div>
+                <div className="w-full py-2.5 flex items-center justify-center gap-2 text-xs font-display tracking-[0.2em] uppercase bg-zinc-800 text-zinc-500 cursor-not-allowed">
+                  <Clock size={13} /> Coming Soon
+                </div>
+              )
+            ) : (
+              <div className="w-full py-2.5 flex items-center justify-center gap-2 text-xs font-display tracking-[0.2em] uppercase bg-zinc-800 text-zinc-600 cursor-not-allowed">
+                Agotada
+              </div>
+            )}
           </div>
 
           <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

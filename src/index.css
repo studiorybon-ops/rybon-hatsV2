@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Bootzy TM';
+  src: url('/fonts/BootzyTM.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -36,8 +44,8 @@
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3.5
-           bg-white text-black font-body text-sm tracking-[0.15em] uppercase
-           transition-all duration-200 font-semibold
+           bg-white text-black font-display text-base tracking-[0.15em] uppercase
+           transition-all duration-200
            hover:bg-zinc-200 active:scale-[0.98]
            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white
            disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600;
@@ -46,7 +54,7 @@
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 px-5 py-3
            border border-zinc-700 text-zinc-300
-           font-body text-xs tracking-[0.15em] uppercase
+           font-display text-sm tracking-[0.15em] uppercase
            transition-all duration-200
            hover:border-zinc-500 hover:text-white
            active:scale-[0.98];
